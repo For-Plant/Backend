@@ -6,7 +6,7 @@ import { response } from './config/response.js';
 import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
 
-import { userRouter } from './src/routes/user.route.js';
+import { userRouter } from './src/routes/userRoute.js';
 
 dotenv.config();
 
