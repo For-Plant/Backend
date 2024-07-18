@@ -5,8 +5,8 @@ import cors from 'cors';
 import { response } from './config/response.js';
 import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
-
-import { userRouter } from './src/routes/user.route.js';
+// 마이페이지 라우터
+import { mypageRouter } from './src/routes/mypageRoute.js';
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // 라우터 설정
-app.use('/user', userRouter);
+app.use('/', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
 
 // 에러 핸들링
 app.use((req, res, next) => {

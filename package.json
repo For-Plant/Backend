@@ -15,7 +15,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
-    "http-status-codes": "^2.3.0"
+    "http-status-codes": "^2.3.0",
+    "mysql2": "^3.10.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.24.8",
