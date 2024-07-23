@@ -8,6 +8,7 @@ import { status } from './config/response.status.js';
 
 import { userRouter } from './src/routes/userRoute.js';
 
+
 dotenv.config();
 
 const app = express();
@@ -16,7 +17,8 @@ app.set('port', process.env.PORT || 3000);
 app.use(cors());
 app.use(express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+
 
 // 라우터 설정
 app.use('/user', userRouter);
