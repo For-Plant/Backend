@@ -1,7 +1,5 @@
 import express from "express";
-import multer from 'multer';
 import { imageUploader_profile } from "../../config/imageUploader.js"
-import addUserIdMiddleware from "../middlewares/addUserIdMiddleware.js";
 import jwtMiddleware from "../../config/jwtMiddleware.js"
 import { allUser, userSignup, findId, changePw, overlapId, login } from "../controllers/userController.js";
 
@@ -10,10 +8,7 @@ export const userRouter = express.Router();
 // 전체 유저 조회
 userRouter.get('/users', jwtMiddleware, allUser)
 // 회원가입
-userRouter.post('/sign-up', 
-    express.urlencoded({ extended: true }), // form 데이터 처리
-    addUserIdMiddleware, // `user_id`를 `req`에 추가
-    imageUploader_profile.single("image"), userSignup);
+userRouter.post('/sign-up', imageUploader_profile.single("image"), userSignup);
 // 로그인 - jwt token 발급
 userRouter.post('/login', login)
 // 아이디 중복확인

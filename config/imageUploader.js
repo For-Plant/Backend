@@ -35,10 +35,8 @@ export const imageUploader_profile = multer({
             if (!allowedExtensions.includes(extension)) {
                 return callback(new Error("wrong extension"));
             }
-            console.log("userId:",req.userId)
-            // callback(null, `${uploadDirectory}/${Date.now()}${extension}`); // 사진 이름를 user_id로 설정
-            const fileName = req.body.member_id ? `${req.body.member_id}${extension}` : `${Date.now()}${extension}`;
-            callback(null, `${uploadDirectory}/${fileName}`);
+            // imageurl
+            callback(null, `${uploadDirectory}/${req.body.member_id}${extension}`);
         },
         acl: "public-read-write",
     }),
