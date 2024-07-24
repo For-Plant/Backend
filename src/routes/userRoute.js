@@ -1,17 +1,17 @@
 import express from "express";
 import multer from 'multer';
-const upload = multer();
-
+// const upload = multer();
+import { imageUploader_profile } from "../../config/imageUploader.js"
+// const {imageUploader_profile} = require("../../config/imageUploader");
 import jwtMiddleware from "../../config/jwtMiddleware.js"
-import { allUser, userSignup, findId, changePw, overlapId,login } from "../controllers/userController.js";
+import { allUser, userSignup, findId, changePw, overlapId, login } from "../controllers/userController.js";
 
 export const userRouter = express.Router();
 
 // 전체 유저 조회
-userRouter.get('/users',jwtMiddleware, allUser)
+userRouter.get('/users', jwtMiddleware, allUser)
 // 회원가입
-// form-data 때문에 upload 어쩌고 넣음
-userRouter.post('/sign-up', upload.none(), userSignup);
+userRouter.post('/sign-up', imageUploader_profile.single("image"), userSignup);
 // 로그인 - jwt token 발급
 userRouter.post('/login', login)
 // 아이디 중복확인

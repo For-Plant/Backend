@@ -22,7 +22,15 @@ export const userSignup = async (req, res, next) => {
     try {
         console.log("회원가입을 요청하였습니다!");
         console.log("body:", req.body); // 값이 잘 들어오나 찍어보기 위한 테스트용
-        const result = await joinUser(req.body)
+        // image
+        var imageURL;
+        if (req.file) {
+          imageURL = req.file.location;
+        } else {
+          imageURL = null;
+        }
+        console.log("imageURL:",imageURL)
+        const result = await joinUser(req.body,imageURL)
 
         return res.send(response(status.SUCCESS, result));
     } catch (err) {

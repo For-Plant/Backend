@@ -11,7 +11,7 @@ const jwtsecret = process.env.JWT_SECRET;
 import { addUser, findId,changePw } from "../models/userDao.js";
 
 // 회원가입
-export const joinUser = async (body) => {
+export const joinUser = async (body,imageURL) => {
     // 현재 날짜 시간
     let date = new Date();
     // 비밀번호 암호화
@@ -29,7 +29,7 @@ export const joinUser = async (body) => {
             marketing_agree: body.marketing_agree,
             created_at: date,
             updated_at: date,
-            profile_img: body.profile_img,
+            profile_img: imageURL,
         });
 
         if (joinUserData == -1) { // ?
