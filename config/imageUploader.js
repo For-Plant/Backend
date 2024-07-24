@@ -29,22 +29,18 @@ export const imageUploader_profile = multer({
         s3: s3,
         bucket: "for-plant-bucket",
         key: async function (req, file, callback) {
-            //const uploadDirectory = req.query.directory ?? "";
 
             const uploadDirectory = "profile";
             const extension = path.extname(file.originalname);
             if (!allowedExtensions.includes(extension)) {
                 return callback(new Error("wrong extension"));
             }
-            callback(null, `${uploadDirectory}/${Date.now()}${extension}`); // 사진 이름를 user_id로 설정
+            console.log("userId:",req.userId)
+            // callback(null, `${uploadDirectory}/${Date.now()}${extension}`); // 사진 이름를 user_id로 설정
+            const fileName = req.body.member_id ? `${req.body.member_id}${extension}` : `${Date.now()}${extension}`;
+            callback(null, `${uploadDirectory}/${fileName}`);
         },
         acl: "public-read-write",
     }),
 });
 
-
-
-// module.exports = {
-//     s3:s3,
-//     imageUploader_profile: imageUploader_profile,
-// };
