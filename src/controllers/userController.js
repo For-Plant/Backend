@@ -4,15 +4,16 @@ import { status } from "../../config/response.status.js";
 import crypto from "crypto";
 
 
-import { checkUser, repeatId,passwordCheck } from "../providers/userProvider.js"
-import { joinUser, checkId, checkPw,signIn } from "../services/userService.js";
+import { checkUser, repeatId, passwordCheck } from "../providers/userProvider.js"
+import { joinUser, checkId, checkPw, signIn } from "../services/userService.js";
 
 // 모든 유저 조회
 export const allUser = async (req, res, next) => {
     try {
         console.log("모든 유저 조회");
+        const result = await checkUser()
 
-        res.send(response(status.SUCCESS, await checkUser()));
+        return res.send(response(status.SUCCESS, result));
     } catch (err) {
         console.error("Error acquiring connection:", err);
     }
@@ -25,12 +26,12 @@ export const userSignup = async (req, res, next) => {
         // image
         var imageURL;
         if (req.file) {
-          imageURL = req.file.location;
+            imageURL = req.file.location;
         } else {
-          imageURL = null;
+            imageURL = null;
         }
-        console.log("imageURL:",imageURL)
-        const result = await joinUser(req.body,imageURL)
+        console.log("imageURL:", imageURL)
+        const result = await joinUser(req.body, imageURL)
 
         return res.send(response(status.SUCCESS, result));
     } catch (err) {
@@ -44,7 +45,7 @@ export const overlapId = async (req, res, next) => {
         console.log("아이디 중복 확인을 요청하였습니다!");
         console.log("query:", req.query); // 값이 잘 들어오나 찍어보기 위한 테스트용
         const result = await repeatId(req.query)
-        console.log("member_id:",result.member_id)
+        console.log("member_id:", result.member_id)
         if (result == undefined) {
             return res.send(response(status.SUCCESS, {}));
         } else {
@@ -104,32 +105,33 @@ export const login = async (req, res, next) => {
 
         if (userId == undefined) {
             return res.send(response(status.LOGIN_ID_EXIST, result));
-        } 
+        }
         // 아이디
         console.log(userId.member_id)
 
         const selectUserId = userId.member_id;
-  
+
         // 비밀번호 확인
         const hashedPassword = await crypto
-          .createHash("sha256")
-          .update(req.body.password)
-          .digest("hex");
+            .createHash("sha256")
+            .update(req.body.password)
+            .digest("hex");
+        // 해시화된 암호
         console.log(hashedPassword);
         const selectUserPasswordParams = [selectUserId, hashedPassword];
         const passwordRows = await passwordCheck(
-          selectUserPasswordParams
+            selectUserPasswordParams
         );
-  
+
         if (!passwordRows || passwordRows.password !== hashedPassword) {
-          return res.send(response(status.LOGIN_PASSWORD_WRONG, {}));
+            return res.send(response(status.LOGIN_PASSWORD_WRONG, {}));
         }
-        console.log("passwordRows.user_id",passwordRows.user_id)
+        console.log("passwordRows.user_id:", passwordRows.user_id)
         const token = await signIn(passwordRows.user_id);
-        console.log("token::", token);
+        console.log("token:", token);
         return res.send(response(status.SUCCESS, token));
-      } catch (err) {
+    } catch (err) {
         console.error("Error acquiring connection:", err);
-      }
+    }
 }
 

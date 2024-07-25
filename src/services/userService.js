@@ -22,6 +22,7 @@ export const joinUser = async (body,imageURL) => {
     console.log("비밀번호 암호화" + hashedPassword);
     try {
         const joinUserData = await addUser({
+            username: body.username,
             nickname: body.nickname,
             member_id: body.member_id,
             password: hashedPassword,
@@ -47,7 +48,7 @@ export const checkId = async (body) => {
     try {
         const result = await findId({
             phonenum: body.phonenum,
-            nickname: body.nickname
+            username: body.username
         });
         return result;
     } catch (err) {
@@ -70,7 +71,7 @@ export const checkPw = async (body) => {
         const result = await changePw({
             member_id: body.member_id,
             phonenum: body.phonenum,
-            nickname: body.nickname,
+            username: body.username,
             date: date,
             password: hashedPassword
         });
@@ -95,7 +96,6 @@ export const signIn = async (user_id) => {
           } // 유효 기간 1일
         );
         console.log("jwtsecret:",jwtsecret)
-        console.log("jwt:", token);
         return token;
       } catch (err) {
         console.error("Error acquiring connection:", err);

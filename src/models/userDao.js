@@ -34,7 +34,7 @@ export const addUser = async (data) => {
         // }
 
         const result = await conn.query(insertUserSql,
-            [data.nickname, data.member_id, data.password, data.phonenum, data.marketing_agree, data.created_at, data.updated_at, data.profile_img]);
+            [data.username, data.nickname, data.member_id, data.password, data.phonenum, data.marketing_agree, data.created_at, data.updated_at, data.profile_img]);
 
         conn.release();
         console.log("Dao result:", result[0].insertId)
@@ -53,8 +53,8 @@ export const findId = async (data) => {
             `
             select member_id
             from USER
-            where phonenum=? and nickname=?
-            `, [data.phonenum, data.nickname]
+            where username=? and phonenum=?
+            `, [data.username, data.phonenum]
         );
         conn.release();
         return result[0];
@@ -71,8 +71,8 @@ export const changePw = async (data) => {
             `
             update USER
             set password=? , updated_at=?
-            where member_id=? and phonenum=? and nickname=?
-            `, [data.password, data.date, data.member_id, data.phonenum, data.nickname]
+            where member_id=? and phonenum=? and username=?
+            `, [data.password, data.date, data.member_id, data.phonenum, data.username]
         );
         conn.release();
         return result[0];
@@ -111,7 +111,7 @@ export const selectUserPassword = async (data) => {
             where member_id=? and password=?
             `,
             [data[0], data[1]]
-          );
+        );
         conn.release();
         console.log(result)
         return result[0];
