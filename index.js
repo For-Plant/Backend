@@ -7,6 +7,7 @@ import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
 
 import { userRouter } from './src/routes/userRoute.js';
+import { homeRouter } from './src/routes/homeRoute.js';
 
 
 dotenv.config();
@@ -22,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // 라우터 설정
 app.use('/user', userRouter);
+app.use('/home', homeRouter);
+
 
 // 에러 핸들링
 app.use((req, res, next) => {

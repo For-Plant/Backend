@@ -31,4 +31,7 @@ export const status = {
     LOGIN_ID_EXIST : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4004", "message": "아이디가 존재합니다." },
     TOKEN_EMPTY : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4005", "message": "jwt token이 없습니다." },
     TOKEN_VERIFICATION_FAILURE : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4006", "message": "jwt token 인증 실패" },
+
+    // plant err
+    NO_REPRESENTATIVE_PLANT : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "PLANT4001", "message": "대표식물이 없습니다." },
 }
