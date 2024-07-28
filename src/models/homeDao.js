@@ -22,3 +22,23 @@ export const home = async (user_id) => {
         throw new BaseError(status.PARAMETER_IS_WRONG);
     }
 };
+
+// 질문 불러오기
+export const question = async (data) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            select question, answer_a, answer_b
+            from ALGORITHM_Q
+            where al_id=?
+            `, [data.num]
+        );
+        console.log(result)
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};
