@@ -1,8 +1,8 @@
-import { response } from '../config/response';
-import { status } from '../config/response.status';
-import { imageUploader_plant } from '../config/imageUploader';
-import { getPlantListService, getRecordListService, getRecordService, getPlantService } from '../services/recordProvider';
-import { writeRecordService, addPlantService, representPlantService, deletePlantService, deadPlantService, updatePlantService } from '../services/recordService';
+import { response } from '../../config/response.js';
+import { status } from '../../config/response.status.js';
+import { imageUploader_plant } from '../../config/imageUploader.js';
+import { getPlantListService, getRecordListService, getRecordService, getPlantService } from '../providers/recordProvider.js';
+import { writeRecordService, addPlantService, representPlantService, deletePlantService, deadPlantService, updatePlantService } from '../services/recordService.js';
 
 // 메인 기록화면 : 반려식물 목록
 export const getPlantListCon = async (req, res) => {
@@ -127,7 +127,7 @@ export const getPlantCon = async (req, res) => {
 };
 
 // 식물 수정 : 식물 이름, 식물 별명, 식물과 만난 날, 식물의 사진
-export const updatePlantCon = async (req, res) => {
+export const updatePlantsCon = async (req, res) => {
     imageUploader_plant.single('plant_img')(req, res, async (err) => {
         if (err) {
             console.error("식물 이미지를 업로드하는 중 오류 발생:", err); // 에러 로깅
@@ -152,4 +152,4 @@ export const updatePlantCon = async (req, res) => {
     });
 };
 
-export { getPlantListCon, getRecordListCon, writeRecordCon, getRecordCon, addPlantCon, representPlantCon, deletePlantCon, deadPlantCon, getPlantCon, updatePlantCon };
+

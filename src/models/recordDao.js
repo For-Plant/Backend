@@ -1,10 +1,10 @@
-import pool from '../config/db.connect.js';
-import { selectPlantList, selectRecordList, writePlantRecord, selectRecord, insertPlant, updateRepresent, deletePlant, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo } from './recordSql.js';
-import { response } from '../config/response.js';
-import { status } from '../config/responseStatus.js';
+import { pool } from '../../config/db.connect.js';
+import { selectPlantList, selectRecordList, writePlantRecord, selectRecord, insertPlant, deletePlant, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo } from './recordSql.js';
+import { response } from '../../config/response.js';
+import { status } from '../../config/response.status.js';
 
 // 메인 기록화면 : 반려식물 목록
-export const getPlantList = async (userId) => {
+export const getPlantListDao = async (userId) => {
     try {
         const conn = await pool.getConnection();
         const [rows] = await conn.query(selectPlantList, [userId]);
@@ -17,7 +17,7 @@ export const getPlantList = async (userId) => {
 };
 
 // 식물 관리 : 특정 식물에 대한 날짜 모음, 식물 닉네임, 사진
-export const getRecordList = async (userId, plantNickname) => {
+export const getRecordListDao = async (userId, plantNickname) => {
     try {
         const conn = await pool.getConnection();
         const [records] = await conn.query(selectRecordList, [userId, plantNickname]);
@@ -31,7 +31,7 @@ export const getRecordList = async (userId, plantNickname) => {
 };
 
 // 나의 식물 일지 작성 : 식물일지를 사용자가 작성시, 그 작성 글을 content에 넣기
-export const writeRecord = async (userId, plantNickname, recordDto) => {
+export const writeRecordDao = async (userId, plantNickname, recordDto) => {
     try {
         const conn = await pool.getConnection();
         const [result] = await conn.query(writePlantRecord, [userId, userId, plantNickname, recordDto.content, recordDto.created_at]);
@@ -44,7 +44,7 @@ export const writeRecord = async (userId, plantNickname, recordDto) => {
 };
 
 // 나의 식물 일지 확인하기 : 식물 관리 화면에서 날짜를 선택하면 해당 날짜의 일지를 보여주는 것
-export const getRecord = async (userId, nickname, date) => {
+export const getRecordDao = async (userId, nickname, date) => {
     try {
         const conn = await pool.getConnection();
         const [rows] = await conn.query(selectRecord, [date, nickname, userId]);
@@ -57,7 +57,7 @@ export const getRecord = async (userId, nickname, date) => {
 };
 
 // 식물 추가 : 식물 이름, 식물 별명, 식물과 만난 날, 식물의 사진
-export const addPlant = async (userId, plantDto) => {
+export const addPlantDao = async (userId, plantDto) => {
     try {
         const conn = await pool.getConnection();
         const [result] = await conn.query(insertPlant, [userId, plantDto.name, plantDto.nickname, plantDto.created_at, plantDto.photo]);
@@ -70,7 +70,7 @@ export const addPlant = async (userId, plantDto) => {
 };
 
 // 대표 식물 지정하기 : 버튼 누르면 representative_plant 테이블에 추가
-export const representPlant = async (userId, plantNickname) => {
+export const representPlantDao = async (userId, plantNickname) => {
     try {
         const conn = await pool.getConnection();
         // plant_id를 조회
@@ -95,7 +95,7 @@ export const representPlant = async (userId, plantNickname) => {
 };
 
 // 식물 삭제 : 버튼 누르면 삭제
-export const deletePlant = async (userId, plantNickname) => {
+export const removePlantDao = async (userId, plantNickname) => {
     try {
         const conn = await pool.getConnection();
         const [result] = await conn.query(deletePlant, [userId, plantNickname]);
@@ -108,7 +108,7 @@ export const deletePlant = async (userId, plantNickname) => {
 };
 
 // 식물 부고 처리 : 식물 부고처리 버튼 클릭시, -> 식물의 이름 , 식물이 죽은 날짜, 식물이 무지개더미에 들어간 이유, 추모편지
-export const deadPlant = async (userId, plantNickname, deadPlantDto) => {
+export const deadPlantDao = async (userId, plantNickname, deadPlantDto) => {
     try {
         const conn = await pool.getConnection();
         // plant_img가 없으면 null을 반환하도록 
@@ -132,7 +132,7 @@ export const deadPlant = async (userId, plantNickname, deadPlantDto) => {
 };
 
 // 식물 수정 : 식물 이름, 식물 별명, 식물과 만난 날, 식물의 사진
-export const getPlantInfo = async (userId, plantNickname) => {
+export const getPlantInfoDao = async (userId, plantNickname) => {
     try {
         const conn = await pool.getConnection();
         const [plant] = await conn.query(getPlantDetails, [userId, plantNickname]);
@@ -148,7 +148,7 @@ export const getPlantInfo = async (userId, plantNickname) => {
     }
 };
 
-export const updatePlantInfo = async (userId, plantNickname, plantData) => {
+export const updatePlantInfoDao = async (userId, plantNickname, plantData) => {
     try {
         const conn = await pool.getConnection();
         const [result] = await conn.query(updatePlantDetails, [plantData.name, plantData.nickname, plantData.created_at, plantData.photo, userId, plantNickname]);

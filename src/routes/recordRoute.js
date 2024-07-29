@@ -1,7 +1,7 @@
 import express from "express";
-import jwtMiddleware from "../config/jwtMiddleware.js";
-import { getPlantListCon, getRecordListCon, writeRecordCon, getRecordCon, addPlantCon, representPlantCon, deletePlantCon, deadPlantCon, getPlantCon, updatePlantCon } from "../controllers/recordController.js";
-import { imageUploader_plant } from "../config/imageUploader.js";
+import jwtMiddleware from "../../config/jwtMiddleware.js";
+import { getPlantListCon, getRecordListCon, writeRecordCon, getRecordCon, addPlantCon, representPlantCon, deletePlantCon, deadPlantCon, getPlantCon, updatePlantsCon } from "../controllers/recordController.js";
+import { imageUploader_plant } from "../../config/imageUploader.js";
 
 const recordRouter = express.Router();
 
@@ -33,6 +33,6 @@ recordRouter.post('/dead-plant', jwtMiddleware, deadPlantCon);
 recordRouter.get('/plant', jwtMiddleware, getPlantCon);
 
 // 식물 수정 : 식물 이름, 식물 별명, 식물과 만난 날, 식물의 사진
-recordRouter.put('/plant', jwtMiddleware, imageUploader_plant.single('plant_img'), updatePlantCon);
+recordRouter.put('/plant', jwtMiddleware, imageUploader_plant.single('plant_img'), updatePlantsCon);
 
 export default recordRouter;

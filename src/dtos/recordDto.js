@@ -37,7 +37,7 @@ const oneRecordDTO = (data) => {
     };
 };
 
-// Dead Plant DTO
+/**Dead Plant DTO
 const deadPlantDTO = (data) => {
     return {
         deathDate: data.created_at,
@@ -46,5 +46,5 @@ const deadPlantDTO = (data) => {
         img: data.plant_img
     };
 };
-
-module.exports = { plantListDTO, plantDTO, recordListDTO, oneRecordDTO, deadPlantDTO };
+**/
+export { plantListDTO, plantDTO, recordListDTO, oneRecordDTO };
