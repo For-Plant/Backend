@@ -45,7 +45,6 @@ export const overlapId = async (req, res, next) => {
         console.log("아이디 중복 확인을 요청하였습니다!");
         console.log("query:", req.query); // 값이 잘 들어오나 찍어보기 위한 테스트용
         const result = await repeatId(req.query)
-        console.log("member_id:", result.member_id)
         if (result == undefined) {
             return res.send(response(status.SUCCESS, {}));
         } else {
@@ -81,7 +80,8 @@ export const changePw = async (req, res, next) => {
         // 아이디 존재하는지 확인
         const result_id = await checkId(req.body)
         console.log("result_id:", result_id)
-        if (result_id == undefined) {
+
+        if ( result_id == undefined || result_id.member_id != req.body.member_id) {
             return res.send(response(status.LOGIN_ID_NOT_EXIST, {}));
         }
 
