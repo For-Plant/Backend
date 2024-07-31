@@ -42,3 +42,41 @@ export const question = async (data) => {
         throw new BaseError(status.PARAMETER_IS_WRONG);
     }
 };
+
+// mbti 식물 가져오기
+export const mbtiPlant = async (data) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            select plantname
+            from MBTI_PLANT
+            where mbti=?
+            `, [data]
+        );
+        console.log(result)
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};
+
+// 소울메이트 식물 업로드
+export const soulmateUpload = async (user_id, plantname) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            insert into SOULMATE_PLANT (user_id, soulmate_name)
+            values (?, ?)
+            `, [user_id, plantname]
+        );
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};

@@ -2,6 +2,7 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 
 import { homeScreen, questionList } from "../providers/homeProvider.js"
+import { soulResult } from "../services/homeService.js"
 
 // 홈화면(대표식물 날짜,이미지)
 export const homescreen = async (req, res, next) => {
@@ -51,6 +52,22 @@ export const question = async (req, res, next) => {
         console.log("질문 불러오기");
         console.log(req.query)
         const result = await questionList(req.query)
+
+        return res.send(response(status.SUCCESS, result));
+
+    } catch (err) {
+        console.error("Error acquiring connection:", err);
+    }
+};
+
+// 소울메이트 결과
+export const soulmateResult = async (req, res, next) => {
+    try {
+        console.log("소울메이트 결과");
+        console.log(req.body)
+        const user_id = req.verifiedToken.user_id; // 로그인 된 user_id
+        console.log(user_id)
+        const result = await soulResult(req.body, user_id)
 
         return res.send(response(status.SUCCESS, result));
 
