@@ -9,8 +9,13 @@ export const getPlantListService = async (user_id) => {
 
 // 식물 관리 : 특정 식물에 대한 날짜 모음, 식물 닉네임, 사진
 export const getRecordListService = async (user_id, plant_nickname) => {
-    const result = await getRecordListDao(user_id, plant_nickname);
-    return recordListDTO(result);
+    try {
+        const records = await getRecordListDao(user_id, plant_nickname);
+        return recordListDTO(records);
+    } catch (error) {
+        console.error("getRecordListService 중 오류 발생:", error); // 에러 로깅
+        throw error;
+    }
 };
 
 // 나의 식물 일지 확인하기 : 식물 관리 화면에서 날짜를 선택하면 해당 날짜의 일지를 보여주는 것
