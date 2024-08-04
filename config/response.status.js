@@ -31,4 +31,6 @@ export const status = {
     LOGIN_ID_EXIST : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4004", "message": "아이디가 존재합니다." },
     TOKEN_EMPTY : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4005", "message": "jwt token이 없습니다." },
     TOKEN_VERIFICATION_FAILURE : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4006", "message": "jwt token 인증 실패" },
+    USER_NOT_EXIST : {status: StatusCodes.BAD_REQUEST, "isSuccess": false, "code": "SIGNIN4007", "message": "유저를 찾을 수 없습니다" },
+
 }

@@ -6,9 +6,11 @@ import { response } from './config/response.js';
 import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
 
-import { userRouter } from './src/routes/userRoute.js'
+import { userRouter } from './src/routes/userRoute.js';
 import mypageRouter from './src/routes/mypageRoute.js';
 import recordRouter from './src/routes/recordRoute.js';
+import { homeRouter } from './src/routes/homeRoute.js';
+
 
 dotenv.config();
 
@@ -25,6 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRouter);
 app.use('/mypage', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
 app.use('/record', recordRouter);
+app.use('/home', homeRouter);
+
 
 // 에러 핸들링
 app.use((req, res, next) => {

@@ -82,7 +82,7 @@ export const changePw = async (req, res, next) => {
         console.log("result_id:", result_id)
 
         if ( result_id == undefined || result_id.member_id != req.body.member_id) {
-            return res.send(response(status.LOGIN_ID_NOT_EXIST, {}));
+            return res.send(response(status.USER_NOT_EXIST, {}));
         }
 
         // 아이디 존재하면 비밀번호 변경
