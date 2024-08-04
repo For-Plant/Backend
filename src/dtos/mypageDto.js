@@ -12,6 +12,7 @@ export const userDTO = (data) => {
 
 // 반려 식물
 export const plantDTO = (data) => {
+    if (!data) return {}; // 데이터가 정의되지 않은 경우 빈 객체 반환
     return {
         name: data.plant_name,
         nickname: data.plant_nickname,
@@ -28,5 +29,13 @@ export const deadPlantDTO = (data) => {
         dead_created_at: data.dead_created_at,
         img: data.plant_img,
         letter: data.memorial_letter
+    };
+};
+
+export const oneRecordDTO = (data) => {
+    const record = data[0];
+    console.log(record);
+    return {
+        content: record.content
     };
 };

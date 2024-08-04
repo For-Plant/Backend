@@ -29,6 +29,6 @@ mypageRouter.get('/record-content', jwtMiddleware, getRecordContentCon);
 mypageRouter.get('/profile', jwtMiddleware, getUserProfileCon);
 
 // 사용자 프로필 수정
-mypageRouter.put('/profile', jwtMiddleware, imageUploader_profile.single('profile_img'), updateUserCon);
+mypageRouter.put('/profile', jwtMiddleware, updateUserCon);
 
 export default mypageRouter;

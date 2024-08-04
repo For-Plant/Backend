@@ -1,7 +1,7 @@
 import { pool } from '../../config/db.connect.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
-import { getUserInfoSql, getRepresentPlantSql, getAlivePlantsSql, getDeadPlantsSql, getDeadPlantDetailsSql, updateUserProfileSql } from './mypageSql.js';
+import { getUserInfoSql, getRepresentPlantSql, getAliveSql, getDeadSql, getDeadPlantDetailsSql, updateUserProfileSql, selectRecord, getProfileUrlSql, getMemberIdSql } from './mypageSql.js';
 
 // 사용자 정보 가져오기
 export const getUserInfoDao = async (user_id) => {
@@ -33,7 +33,7 @@ export const getRepresentPlantDao = async (user_id) => {
 export const getAlivePlantsDao = async (user_id, limit) => {
     try {
         const conn = await pool.getConnection();
-        const [rows] = await conn.query(getAlivePlantsSql, [user_id, limit]);
+        const [rows] = await conn.query(getAliveSql, [user_id, limit]);
         conn.release();
         return rows;
     } catch (err) {
@@ -46,7 +46,7 @@ export const getAlivePlantsDao = async (user_id, limit) => {
 export const getDeadPlantsDao = async (user_id, limit) => {
     try {
         const conn = await pool.getConnection();
-        const [rows] = await conn.query(getDeadPlantsSql, [user_id, limit]);
+        const [rows] = await conn.query(getDeadSql, [user_id, limit]);
         conn.release();
         return rows;
     } catch (err) {
@@ -72,10 +72,83 @@ export const getDeadPlantDetailsDao = async (user_id, plant_nickname) => {
 export const updateUserDao = async (user_id, updatedData) => {
     try {
         const conn = await pool.getConnection();
-        await conn.query(updateUserProfileSql, [updatedData.nickname, updatedData.profile_img, user_id]);
+        const updates = [];
+        const params = [];
+    
+        if (updatedData.nickname) {
+            updates.push('nickname = ?');
+            params.push(updatedData.nickname);
+        }
+    
+        if (updatedData.photo) {
+            updates.push('profile_img = ?');
+            params.push(updatedData.photo);
+        }
+
+        if (updatedData.password) {
+            updates.push('password = ?');
+            params.push(updatedData.password);
+        }
+    
+        params.push(user_id);
+        
+        const sql = updateUserProfileSql(updates);
+        
+        // 생성된 SQL 문자열과 매개변수를 사용하여 쿼리 실행
+        await conn.query(sql, params);
         conn.release();
     } catch (err) {
         console.error("사용자 프로필 수정 중 오류 발생:", err);
         throw response(status.INTERNAL_SERVER_ERROR, {});
     }
 };
+
+export const getContentDao = async (user_id, nickname, date) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(selectRecord, [user_id, nickname, date]);
+        conn.release();
+        return rows;
+    } catch (err) {
+        console.error("getRecord 중 오류 발생:", err); // 에러 로깅
+        throw new Error('Database query failed');
+    }
+};
+
+// 프로필 사진 url 가져오기
+export const getProfileImageDao = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(getProfileUrlSql,[user_id]);
+        conn.release();
+        return rows;
+    } catch (err) {
+        console.error("geProfileImage 중 오류 발생:", err); // 에러 로깅
+        throw new Error('Database query failed');
+    }
+}
+
+export const getMemberIdDao = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const member_id = await conn.query(getMemberIdSql,[user_id]);
+        console.log('member_id dao : ', member_id);
+        conn.release();
+        return member_id;
+    } catch (err) {
+        console.error("getMemberId 중 오류 발생:", err); // 에러 로깅
+        throw new Error('Database query failed');
+    }
+}
+
+export const getNicknameDao = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(getNicknameSql,[user_id]);
+        conn.release();
+        return rows;
+    } catch (err) {
+        console.error("getMemberId 중 오류 발생:", err); // 에러 로깅
+        throw new Error('Database query failed');
+    }
+}

@@ -31,20 +31,18 @@ const recordListDTO = (data) => {
 // Single Record DTO
 const oneRecordDTO = (data) => {
     const record = data[0];
-
+    console.log(record);
     return {
         content: record.content
     };
 };
 
-/**Dead Plant DTO
 const deadPlantDTO = (data) => {
     return {
-        deathDate: data.created_at,
+        deathDate: data.dead_date,
         reason: data.reason,
         letter: data.memorial_letter,
-        img: data.plant_img
     };
 };
-**/
-export { plantListDTO, plantDTO, recordListDTO, oneRecordDTO };
+
+export { plantListDTO, plantDTO, recordListDTO, oneRecordDTO, deadPlantDTO };
