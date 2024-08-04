@@ -1,7 +1,7 @@
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 
-import { homeScreen, questionList } from "../providers/homeProvider.js"
+import { homeScreen, questionList, soulmatePlant } from "../providers/homeProvider.js"
 import { soulResult } from "../services/homeService.js"
 
 // 홈화면(대표식물 날짜,이미지)
@@ -12,9 +12,18 @@ export const homescreen = async (req, res, next) => {
         console.log(user_id)
         const result = await homeScreen(user_id)
 
+        // 내가 최근에 검사한 소울메이트 식물
+        const soulmate = await soulmatePlant(user_id)
+        console.log("최근 검사 소울메이트 식물 이름:", soulmate)
+
         // 대표식물 없을 때
         if (result == "") {
-            return res.send(response(status.NO_REPRESENTATIVE_PLANT, {}))
+            if (soulmate == "") { // 소울메이트 식물 검사 안했을 때
+                return res.send(response(status.NO_REPRESENTATIVE_PLANT, {}))
+            } else { // 소울메이트 식물 검사 했을 때
+                return res.send(response(status.NO_REPRESENTATIVE_PLANT,
+                    soulmate[0].soulmate_name))
+            }
         }
 
         // 대표식물 있을 때
@@ -34,12 +43,26 @@ export const homescreen = async (req, res, next) => {
         // 차이를 일단위로 변환
         const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24) + 1;
         console.log("differenceInDays:", differenceInDays)
-        return res.send(response(status.SUCCESS, {
-            "plant_nickname": result[0].plant_nickname,
-            "plant_img": result[0].plant_img,
-            "plant_id": result[0].plant_id,
-            "date": Math.trunc(differenceInDays)
-        }))
+
+
+        if (soulmate == "") {
+            return res.send(response(status.SUCCESS, {
+                "plant_nickname": result[0].plant_nickname,
+                "plant_img": result[0].plant_img,
+                "plant_id": result[0].plant_id,
+                "date": Math.trunc(differenceInDays),
+                "soulmate": soulmate
+            }))
+        } else {
+            return res.send(response(status.SUCCESS, {
+                "plant_nickname": result[0].plant_nickname,
+                "plant_img": result[0].plant_img,
+                "plant_id": result[0].plant_id,
+                "date": Math.trunc(differenceInDays),
+                "soulmate_plant": soulmate[0].soulmate_name
+            }))
+        }
+
 
     } catch (err) {
         console.error("Error acquiring connection:", err);

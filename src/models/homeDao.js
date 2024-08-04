@@ -80,3 +80,60 @@ export const soulmateUpload = async (user_id, plantname) => {
         throw new BaseError(status.PARAMETER_IS_WRONG);
     }
 };
+
+// 소울메이트 식물 찾기 검사 여부
+export const exist_soulmate = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            select soulmate_id, soulmate_name
+            from SOULMATE_PLANT
+            where user_id=?
+            `, user_id
+        );
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};
+
+// 소울메이트 식물 업데이트 - 원래는 put으로 해야되고 restful에 안맞는다고 하지만 일단 쓴다
+export const soulmateUpdate = async (user_id, plantname) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            update SOULMATE_PLANT
+            set soulmate_name=?
+            where user_id=?
+            `, [plantname, user_id]
+        );
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};
+
+// 내가 최근에 검사한 소울메이트 식물
+export const soulmate = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [result] = await conn.query(
+            `
+            select soulmate_name
+            from SOULMATE_PLANT
+            where user_id=?
+            `, user_id
+        );
+        conn.release();
+        return result;
+    } catch (err) {
+        console.error('Error executing query:', err);  // 에러 세부 정보 로그 출력
+        throw new BaseError(status.PARAMETER_IS_WRONG);
+    }
+};
