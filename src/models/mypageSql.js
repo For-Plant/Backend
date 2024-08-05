@@ -14,7 +14,7 @@ export const getDeadPlantsSql = 'SELECT plant_nickname, PLANT.created_at as plan
 export const getDeadPlantDetailsSql = 'SELECT plant_nickname, PLANT.created_at as plant_created_at, PLANT_DEAD.created_at as dead_created_at, PLANT.plant_img, memorial_letter FROM PLANT JOIN PLANT_DEAD ON PLANT.plant_id = PLANT_DEAD.plant_id WHERE PLANT.user_id = ? AND PLANT.plant_nickname = ?';
 
 // 사용자 프로필 수정
-export const updateUserProfileSql = (updates) => `UPDATE USER SET ${updates.join(', ')} WHERE user_id = ?;`;
+export const updateUserProfileSql = (updates) => `UPDATE USER SET ${updates.join(', ')}, updated_at = NOW() WHERE user_id = ?;`;
 export const getProfileUrlSql = 'SELECT profile_img FROM USER WHERE user_id = ?;';
 export const getMemberIdSql = 'SELECT member_id FROM USER WHERE user_id = ?;';
 export const getNicknameSql = 'SELECT nickname FROM USER WHERE user_id = ?;'
