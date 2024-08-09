@@ -2,6 +2,7 @@ import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
 import { slugify } from 'transliteration';
 import path from "path";
+import { format } from 'date-fns';
 import { imageUploader_plant, renameS3Object, deleteS3Object, editImage } from '../../config/imageUploader.js';
 import { getPlantListService, getRecordListService, getRecordService, getPlantService } from '../providers/recordProvider.js';
 import { writeRecordService, addPlantService, representPlantService, deletePlantService, deadPlantService, updatePlantService, deleteRecordService } from '../services/recordService.js';
@@ -38,6 +39,11 @@ export const writeRecordCon = async (req, res) => {
     try {
         const { plant_nickname } = req.query;
         const recordData = req.body;
+
+        // 현재 날짜를 기록 데이터에 추가 (YYYY-MM-DD 형식)
+        const currentDate = format(new Date(), 'yyyy-MM-dd'); // 현재 날짜를 형식화
+        recordData.created_at = currentDate;
+        recordData.updated_at = currentDate;
 
         // 로그 추가하여 데이터 확인
         console.log("writeRecordCon - plant_nickname:", plant_nickname);
