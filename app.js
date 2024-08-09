@@ -6,7 +6,6 @@ import { response } from './config/response.js';
 import { BaseError } from './config/error.js';
 import { status } from './config/response.status.js';
 
-import userRouter from './src/routes/userRoute.js';
 import mypageRouter from './src/routes/mypageRoute.js';
 import recordRouter from './src/routes/recordRoute.js';
 
@@ -22,7 +21,6 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // 라우터 설정
-app.use('/user', userRouter);
 app.use('/mypage', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
 app.use('/record', recordRouter);
 
