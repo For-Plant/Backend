@@ -14,7 +14,7 @@ export const soulResult = async (body, user_id) => {
 
         // mbti에 맞는 식물 가져오기
         const plant = await mbtiPlant(mbtiResult)
-        console.log("mbtiplant:", plant[0].plantname)
+        console.log("mbtiplant:", plant[0])
 
         // 소울메이트 식물 찾기 검사 한 적 있는지
         const exist = await exist_soulmate(user_id)

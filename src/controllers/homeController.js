@@ -21,8 +21,11 @@ export const homescreen = async (req, res, next) => {
             if (soulmate == "") { // 소울메이트 식물 검사 안했을 때
                 return res.send(response(status.NO_REPRESENTATIVE_PLANT, {}))
             } else { // 소울메이트 식물 검사 했을 때
-                return res.send(response(status.NO_REPRESENTATIVE_PLANT,
-                    soulmate[0].soulmate_name))
+                return res.send(response(status.SUCCESS,{
+                    "representative_plant_nickname": result,
+                    "soulmate_plant": soulmate[0].soulmate_name
+                }
+                    ))
             }
         }
 
@@ -47,17 +50,17 @@ export const homescreen = async (req, res, next) => {
 
         if (soulmate == "") {
             return res.send(response(status.SUCCESS, {
-                "plant_nickname": result[0].plant_nickname,
-                "plant_img": result[0].plant_img,
-                "plant_id": result[0].plant_id,
+                "representative_plant_nickname": result[0].plant_nickname,
+                "representative_plant_img": result[0].plant_img,
+                "representative_plant_id": result[0].plant_id,
                 "date": Math.trunc(differenceInDays),
                 "soulmate": soulmate
             }))
         } else {
             return res.send(response(status.SUCCESS, {
-                "plant_nickname": result[0].plant_nickname,
-                "plant_img": result[0].plant_img,
-                "plant_id": result[0].plant_id,
+                "representative_plant_nickname": result[0].plant_nickname,
+                "representative_plant_img": result[0].plant_img,
+                "representative_plant_id": result[0].plant_id,
                 "date": Math.trunc(differenceInDays),
                 "soulmate_plant": soulmate[0].soulmate_name
             }))

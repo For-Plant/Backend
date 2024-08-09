@@ -49,7 +49,7 @@ export const mbtiPlant = async (data) => {
         const conn = await pool.getConnection();
         const [result] = await conn.query(
             `
-            select plantname
+            select plantname,plant_feature,plant_environment,how_to_grow,plant_tmi,plant_img
             from MBTI_PLANT
             where mbti=?
             `, [data]

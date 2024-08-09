@@ -189,5 +189,6 @@ $RECYCLE.BIN/
 # Ignore db.connect.js file
 config/db.connect.js
 config/s3.js
+config/jwt.js
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,windows
