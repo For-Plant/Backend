@@ -4,9 +4,8 @@
 export const userDTO = (data) => {
     return {
         member_id: data.member_id,
-        nickname: data.nickname,
-        profile_img: data.profile_img,
-        password: data.password
+        username: data.username,
+        profile_img: data.profile_img
     };
 };
 
