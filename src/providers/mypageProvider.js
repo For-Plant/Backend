@@ -1,10 +1,10 @@
-import { getUserInfoDao, getRepresentPlantDao, getAlivePlantsDao, getDeadPlantsDao, getDeadPlantDetailsDao, getContentDao } from '../models/mypageDao.js';
-import { userDTO, plantDTO, deadPlantDTO, oneRecordDTO } from '../dtos/mypageDto.js';
+import { getUserInfoDao, getRepresentPlantDao, getAlivePlantsDao, getDeadPlantsDao, getDeadPlantDetailsDao, getContentDao, getUserInfoEditDao } from '../models/mypageDao.js';
+import { userDTO, plantDTO, deadPlantDTO, oneRecordDTO, userMainDTO, userEditDTO } from '../dtos/mypageDto.js';
 
 // 사용자 정보 가져오기
 export const getUserInfo = async (user_id) => {
     const userInfo = await getUserInfoDao(user_id);
-    return userDTO(userInfo);
+    return userMainDTO(userInfo);
 };
 
 // 대표 식물 가져오기
@@ -35,4 +35,10 @@ export const getDeadPlantDetails = async (user_id, plant_nickname) => {
 export const getContentService = async (user_id, plant_nickname, date) => {
     const result = await getContentDao(user_id, plant_nickname, date);
     return oneRecordDTO(result);
+};
+
+// 사용자 수정 프로필 가져오기
+export const getUserEditInfo = async (user_id) => {
+    const userInfo = await getUserInfoEditDao(user_id);
+    return userEditDTO(userInfo);
 };

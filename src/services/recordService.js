@@ -73,6 +73,8 @@ export const deadPlantService = async (userId, plantNickname, deadPlantDto) => {
             letter: deadPlantDto.memorial_letter,
         };
         console.log("날짜", deadPlantData.dead_date)
+        console.log("reason", deadPlantData.reason)
+        console.log("letter", deadPlantData.letter)
         const result = await deadPlantDao(userId, plantNickname, deadPlantData);
         return result;
     } catch (err) {

@@ -4,8 +4,9 @@
 export const userDTO = (data) => {
     return {
         member_id: data.member_id,
-        username: data.username,
-        profile_img: data.profile_img
+        nickname: data.nickname,
+        profile_img: data.profile_img,
+        password: data.password
     };
 };
 
@@ -36,5 +37,21 @@ export const oneRecordDTO = (data) => {
     console.log(record);
     return {
         content: record.content
+    };
+};
+
+export const userEditDTO = (data) => {
+    return {
+        member_id: data.member_id,
+        username: data.username,
+        profile_img: data.profile_img,
+    };
+};
+
+export const userMainDTO = (data) => {
+    return {
+        member_id: data.member_id,
+        nickname: data.nickname,
+        profile_img: data.profile_img,
     };
 };

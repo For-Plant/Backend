@@ -1,6 +1,6 @@
 // 메인페이지
 // 사용자 정보 가져오기
-export const getUserInfoSql = 'SELECT member_id, username, profile_img FROM USER WHERE user_id = ?';
+export const getUserInfoSql = 'SELECT member_id, nickname, profile_img FROM USER WHERE user_id = ?';
 // 대표 식물 가져오기
 export const getRepresentPlantSql = 'SELECT plant_name, plant_nickname, DATEDIFF(NOW(), created_at) AS created_at FROM REPRESENTATIVE_PLANT JOIN PLANT ON REPRESENTATIVE_PLANT.plant_id = PLANT.plant_id WHERE PLANT.user_id = ?';
 
@@ -28,3 +28,5 @@ export const selectRecord = 'SELECT PLANT_RECORD.content '
     + 'JOIN PLANT ON PLANT_RECORD.plant_id = PLANT.plant_id '
     + 'WHERE PLANT_RECORD.user_id = ? AND PLANT.plant_nickname = ? AND PLANT_RECORD.created_at = ? ;';
 
+// 사용자 프로필 정보 가져오기
+export const getUserInfoEditSql = 'SELECT member_id, username, profile_img FROM USER WHERE user_id = ?';

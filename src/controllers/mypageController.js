@@ -1,6 +1,6 @@
 // mypageController.js
 import { getRecordListService, getRecordService } from '../providers/recordProvider.js';
-import { getUserInfo, getRepresentPlant, getAlivePlants, getDeadPlants, getDeadPlantDetails, getContentService } from '../providers/mypageProvider.js'; 
+import { getUserInfo, getRepresentPlant, getAlivePlants, getDeadPlants, getDeadPlantDetails, getContentService, getUserEditInfo } from '../providers/mypageProvider.js'; 
 import { updateUser } from '../services/mypageService.js'; 
 import { getProfileImageDao, getMemberIdDao } from '../models/mypageDao.js'
 import { response } from '../../config/response.js'; 
@@ -91,12 +91,11 @@ export const getRecordContentCon = async (req, res) => {
 // 사용자 프로필 가져오기
 export const getUserProfileCon = async (req, res) => {
     try {
-        const userInfo = await getUserInfo(req.verifiedToken.user_id);
+        const userInfo = await getUserEditInfo(req.verifiedToken.user_id);
         const userResponse = {
             member_id: userInfo.member_id,
-            nickname: userInfo.nickname,
-            profile_img: userInfo.profile_img,
-            password: userInfo.password
+            username: userInfo.username,
+            profile_img: userInfo.profile_img
         };
         res.send(response(status.SUCCESS, userResponse));
     } catch (error) {

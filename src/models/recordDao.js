@@ -1,5 +1,5 @@
 import { pool } from '../../config/db.connect.js';
-import { selectPlantList, selectRecordList,selectPlantInfo, writePlantRecord, selectRecord, insertPlant, deletePlant, selectPlantImage, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo, deletePlantRecord } from './recordSql.js';
+import { selectPlantList, selectRecordList,selectPlantInfo, writePlantRecord, selectRecord, insertPlant, deletePlant, selectPlantImage, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo, deletePlantRecord, isRepresentSql, deleteRepresentSql } from './recordSql.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
 
@@ -155,6 +155,11 @@ export const deadPlantDao = async (userId, plantNickname, deadPlantDto) => {
 
         // 부고처리하기 
         const [result] = await conn.query(insertDeadPlant, [userId, plantId, deadPlantDto.reason, deadPlantDto.letter, deadPlantDto.dead_date, plantImg]);
+        const [isRepresent] = await conn.query(isRepresentSql, [userId, plantId])
+        if(isRepresent != 0){
+            await conn.query(deleteRepresentSql, [userId, plantId])
+        }
+        
         conn.release();
         return result.insertId;
     } catch (err) {
