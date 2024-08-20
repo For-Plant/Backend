@@ -10,7 +10,7 @@ import { userRouter } from './src/routes/userRoute.js';
 import mypageRouter from './src/routes/mypageRoute.js';
 import recordRouter from './src/routes/recordRoute.js';
 import { homeRouter } from './src/routes/homeRoute.js';
-
+import { chatRouter } from './src/routes/chatRoute.js';
 
 dotenv.config();
 
@@ -25,9 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // 라우터 설정
 app.use('/user', userRouter);
-app.use('/mypage', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
+app.use('/mypage', mypageRouter);
 app.use('/record', recordRouter);
 app.use('/home', homeRouter);
+app.use('/chat', chatRouter);
 
 
 // 에러 핸들링
