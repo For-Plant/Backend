@@ -104,7 +104,7 @@ class ResNet(nn.Module):
         return x
 
 # 이미지 불러오기
-image = Image.open('uploads/1724062566876.jpeg')
+image = Image.open('uploads/test.jpg')
 
 # 전처리 적용
 input_tensor = transform_test(image)  # 전처리된 이미지 텐서
@@ -127,9 +127,6 @@ with torch.no_grad():  # 그래디언트 계산 비활성화
 
 # 출력값 중 가장 높은 값을 갖는 클래스 선택
 _, predicted = torch.max(output, 1)
-
-# 선택된 클래스 출력
-# print("예측된 클래스:", predicted.item())
 
 # 예측 결과를 JSON 형식으로 출력
 result = {'predicted_class': predicted.item()}
