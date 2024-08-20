@@ -11,6 +11,7 @@ import mypageRouter from './src/routes/mypageRoute.js';
 import recordRouter from './src/routes/recordRoute.js';
 import { homeRouter } from './src/routes/homeRoute.js';
 import { aiRouter } from './src/routes/aiRoute.js';
+import { chatRouter } from './src/routes/chatRoute.js'
 
 // //////
 import path from 'path';
@@ -48,6 +49,7 @@ app.use('/mypage', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
 app.use('/record', recordRouter);
 app.use('/home', homeRouter);
 app.use('/predict', aiRouter);
+app.use('/chat', chatRouter);
 
 
 // 에러 핸들링
