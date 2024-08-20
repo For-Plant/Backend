@@ -10,6 +10,25 @@ import { userRouter } from './src/routes/userRoute.js';
 import mypageRouter from './src/routes/mypageRoute.js';
 import recordRouter from './src/routes/recordRoute.js';
 import { homeRouter } from './src/routes/homeRoute.js';
+import { aiRouter } from './src/routes/aiRoute.js';
+
+// //////
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// 현재 파일의 디렉터리 경로 얻기
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const uploadsDir = path.join(__dirname, 'uploads');
+
+// 디렉터리가 존재하지 않으면 생성
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+//////////
+
 
 
 dotenv.config();
@@ -28,6 +47,7 @@ app.use('/user', userRouter);
 app.use('/mypage', mypageRouter); // 모든 요청을 mypageRouter로 라우팅
 app.use('/record', recordRouter);
 app.use('/home', homeRouter);
+app.use('/predict', aiRouter);
 
 
 // 에러 핸들링
