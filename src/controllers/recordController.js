@@ -99,7 +99,13 @@ export const addPlantCon = async (req, res, next) => {
         };
 
         const result = await addPlantService(plantData);
-        return res.send(response({ isSuccess: true, code: 200, message: "Plant added successfully" }, result));
+        return res.send({
+            isSuccess: true,
+            code: 200,
+            message: "successfully",
+            result: { plant_id: result }
+        });
+          
     } catch (err) {
         console.error("식물 추가 중 오류 발생:", err);
         return res.send(response({ isSuccess: false, code: status.INTERNAL_SERVER_ERROR, message: "Internal Server Error" }, null));
