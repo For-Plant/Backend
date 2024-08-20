@@ -115,9 +115,6 @@ image_path = sys.argv[1]
 # 이미지 불러오기
 image = Image.open(image_path)
 
-# 이미지 불러오기
-# image = Image.open('uploads/test.jpg')
-
 # 전처리 적용
 input_tensor = transform_test(image)  # 전처리된 이미지 텐서
 

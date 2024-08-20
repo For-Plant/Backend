@@ -1,15 +1,8 @@
-// import express from "express";
-// import { predict } from "../controllers/aiController.js";
-
-// export const aiRouter = express.Router();
-
-// // 파일 업로드 및 예측 처리 - jwt 추가하기
-// aiRouter.post('/ai-camera', predict);
-
 import express from "express";
 import multer from "multer";
 import path from "path";
 import { predict } from "../controllers/aiController.js";
+import jwtMiddleware from "../../config/jwtMiddleware.js";
 
 // Multer 설정
 const upload = multer({
@@ -19,5 +12,5 @@ const upload = multer({
 
 export const aiRouter = express.Router();
 
-// 파일 업로드 및 예측 처리 - multer 미들웨어 추가
-aiRouter.post('/ai-camera', upload.single('image'), predict);
+// 식물 이미지 예측 및 식물 정보 전달
+aiRouter.post('/ai-camera', jwtMiddleware, upload.single('image'), predict);
