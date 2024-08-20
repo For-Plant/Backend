@@ -2,12 +2,14 @@ import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import { predictImage } from "../services/aiService.js";
 import { predictPlant } from "../providers/aiProvider.js";
+import fs from "fs";
 
 export const predict = async (req, res) => {
     try {
-        const imagePath = req.body.imagePath; // 클라이언트가 요청 본문으로 이미지 경로를 보냄
+        const imagePath = req.file.path;
+        console.log(imagePath)
         // 인공지능 모델 돌리기
-        const prediction = await predictImage();
+        const prediction = await predictImage(imagePath);
         console.log("prediction:", prediction.predicted_class)
         
         let predicted_plant;
@@ -24,6 +26,16 @@ export const predict = async (req, res) => {
         console.log(predicted_plant)
         // 매칭된 식물 불러오기
         const result = await predictPlant(predicted_plant)
+
+        // 이미지 파일 삭제
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete file:", err);
+            } else {
+                console.log("File deleted:", imagePath);
+            }
+        });
+
         return res.send(response(status.SUCCESS, result[0]));
     } catch (error) {
         console.error("Error acquiring connection:", error);

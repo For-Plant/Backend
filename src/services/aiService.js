@@ -1,7 +1,14 @@
 import { exec } from 'child_process';
-export function predictImage() {
+import path from 'path';
+
+// 이미지 경로를 인자로 받아서 예측을 수행하는 함수
+export function predictImage(imagePath) {
     return new Promise((resolve, reject) => {
-        exec('python3 src/model/predict.py', (error, stdout, stderr) => {
+        // 절대 경로를 사용하기 위해 path.resolve 사용
+        const resolvedImagePath = path.resolve(imagePath);
+
+        // exec 명령어에 imagePath를 인자로 추가
+        exec(`python3 src/ai-model/predict.py "${resolvedImagePath}"`, (error, stdout, stderr) => {
             if (error) {
                 reject(`error: ${error.message}`);
                 return;
@@ -16,17 +23,6 @@ export function predictImage() {
             } catch (parseError) {
                 reject(`JSON parse error: ${parseError.message}`);
             }
-
         });
     });
 }
-
-// 예시 사용법
-// predictImage()
-//     .then(result => {
-//         console.log("Python script result:", result);
-//     })
-//     .catch(err => {
-//         console.error("Python script error:", err);
-//     });
-
