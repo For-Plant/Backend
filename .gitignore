@@ -190,5 +190,6 @@ $RECYCLE.BIN/
 config/db.connect.js
 config/s3.js
 config/jwt.js
+config/gpt.js
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,windows
