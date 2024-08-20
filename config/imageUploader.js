@@ -113,6 +113,23 @@ export const editImage = multer({
     }),
 })
 
+export const editImageProfile = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: "for-plant-bucket",
+        key: async function (req, file, callback) {
+            const uploadDirectory = "profile";
+            const extension = path.extname(file.originalname);
+            if (!allowedExtensions.includes(extension)) {
+                return callback(new Error("wrong extension"));
+            }
+            // imageurl
+            callback(null, `${uploadDirectory}/${req.body.member_id}${extension}`);
+        },
+        acl: "public-read-write",
+    }),
+})
+
 export const checkS3ObjectExists = async (key) => {
     try {
         await s3.send(new HeadObjectCommand({

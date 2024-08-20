@@ -1,7 +1,7 @@
 import { pool } from '../../config/db.connect.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
-import { getUserInfoSql, getRepresentPlantSql, getAliveSql, getDeadSql, getDeadPlantDetailsSql, updateUserProfileSql, selectRecord, getProfileUrlSql, getMemberIdSql, getUserInfoEditSql } from './mypageSql.js';
+import { getUserInfoSql, getRepresentPlantSql, getAliveSql, getDeadSql, getDeadPlantDetailsSql, updateUserProfileSql, selectRecord, getProfileUrlSql, getMemberIdSql, getUserInfoEditSql, deleteImageSql } from './mypageSql.js';
 
 // 사용자 정보 가져오기
 export const getUserInfoDao = async (user_id) => {
@@ -166,3 +166,16 @@ export const getUserInfoEditDao = async (user_id) => {
         throw response(status.INTERNAL_SERVER_ERROR, {});
     }
 };
+
+//프로필 사진 삭제
+export const deleteImageDao = async (user_id) => {
+    try {
+        const conn = await pool.getConnection();
+        const [rows] = await conn.query(deleteImageSql, [user_id]);
+        conn.release();
+        return rows[0];
+    } catch (err){
+        console.error("사진 삭제 중 오류 발생:", err);
+        throw response(status.INTERNAL_SERVER_ERROR, {});
+    }
+}

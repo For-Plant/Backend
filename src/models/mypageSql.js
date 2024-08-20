@@ -30,3 +30,6 @@ export const selectRecord = 'SELECT PLANT_RECORD.content '
 
 // 사용자 프로필 정보 가져오기
 export const getUserInfoEditSql = 'SELECT member_id, username, profile_img FROM USER WHERE user_id = ?';
+
+// 사용자 프로필 사진 삭제
+export const deleteImageSql = 'UPDATE USER SET profile_img = NULL WHERE user_id = ?;';

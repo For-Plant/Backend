@@ -2,11 +2,11 @@
 import { getRecordListService, getRecordService } from '../providers/recordProvider.js';
 import { getUserInfo, getRepresentPlant, getAlivePlants, getDeadPlants, getDeadPlantDetails, getContentService, getUserEditInfo } from '../providers/mypageProvider.js'; 
 import { updateUser } from '../services/mypageService.js'; 
-import { getProfileImageDao, getMemberIdDao } from '../models/mypageDao.js'
+import { getProfileImageDao, getMemberIdDao, deleteImageDao } from '../models/mypageDao.js'
 import { response } from '../../config/response.js'; 
 import { status } from '../../config/response.status.js'; 
 import path from "path";
-import { editImage, deleteS3Object, renameS3Object } from '../../config/imageUploader.js';
+import { editImageProfile, deleteS3Object, renameS3Object } from '../../config/imageUploader.js';
 
 // 마이페이지 메인 화면
 export const getMyPageMainCon = async (req, res) => {
@@ -106,7 +106,7 @@ export const getUserProfileCon = async (req, res) => {
 
 // 사용자 프로필 수정 (이미지 업로드 추가)
 export const updateUserCon = async (req, res) => {
-    editImage.single('profile_img')(req, res, async (err) => {
+    editImageProfile.single('profile_img')(req, res, async (err) => {
         if (err) {
             console.error("profile_img를 업로드하는 중 오류 발생:", err);
             return res.send(response(status.INTERNAL_SERVER_ERROR, { message: err.message }));
@@ -117,37 +117,49 @@ export const updateUserCon = async (req, res) => {
             photo: req.file ? req.file.location : null,
             password: req.body.password
         };
+        console.log(profileData.photo)
         
         try {
             // 프로필 사진 변경
             if (req.file) {
                 // 프로필 사진 URL 조회
                 const profileUrls = await getProfileImageDao(req.verifiedToken.user_id);
-                console.log("삭제할 프로필 사진 URL:", profileUrls);
-
-                if (profileUrls.length > 0) {
+                
+                if (profileUrls.length > 0 && profileUrls[0].profile_img !== null){
                     const profileUrl = profileUrls[0].profile_img; // 배열에서 URL 추출
                     const key = profileUrl.split(".com/")[1]; // S3 키 추출
-                    console.log("삭제할 S3 키:", key);
                     await deleteS3Object(key);
                 }
 
                 const oldUrl = req.file.location; 
-                console.log(oldUrl);
                 const oldKey = oldUrl.split('https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/')[1];
-                console.log(oldKey);
-                const fileExtension = path.extname(oldKey); // 파일 확장자 가져오기
 
+                let fileExtension;
+
+                if (profileUrls.length > 0 && profileUrls[0].profile_img !== null) {
+                    // 기존 프로필 이미지가 있을 때
+                    fileExtension = path.extname(oldKey); // oldKey의 파일 확장자 추출
+                } else {
+                    // 기존 프로필 이미지가 없을 때
+                    fileExtension = path.extname(profileData.photo); // 새로 업로드된 이미지의 확장자 추출
+                }
+                
                 // member_id를 비동기로 가져옴
                 const memberIdResult = await getMemberIdDao(req.verifiedToken.user_id);
                 const member_id = memberIdResult[0][0].member_id;
-                console.log(member_id);
                 const newKey = `profile/${member_id}${fileExtension}`;
-                console.log(`newKey: ${newKey}`);
-                console.log(`oldKey: ${oldKey}`);
                 
                 await renameS3Object(oldKey, newKey);
                 profileData.photo = `https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/${newKey}`;
+            }
+            else{
+                const profileUrls = await getProfileImageDao(req.verifiedToken.user_id);
+                if (profileUrls.length > 0) {
+                    const profileUrl = profileUrls[0].profile_img; // 배열에서 URL 추출
+                    const key = profileUrl.split(".com/")[1]; // S3 키 추출
+                    await deleteS3Object(key);
+                    deleteImageDao(req.verifiedToken.user_id);
+                }
             }
 
             const result = await updateUser(req.verifiedToken.user_id, profileData);
