@@ -1,5 +1,5 @@
 import { pool } from '../../config/db.connect.js';
-import { selectPlantList, selectRecordList,selectPlantInfo, writePlantRecord, selectRecord, insertPlant, deletePlant, selectPlantImage, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo, deletePlantRecord, isRepresentSql, deleteRepresentSql } from './recordSql.js';
+import { selectPlantList, selectRecordList,selectPlantInfo, writePlantRecord, selectRecord, insertPlant, deletePlant, selectPlantImage, insertDeadPlant, getPlantId, deleteRepresent, setRepresent, getPlantDetails, updatePlantDetails, getPlantInfo, deletePlantRecord, isRepresentSql, deleteRepresentSql, deleteImageUrlSql } from './recordSql.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
 
@@ -185,6 +185,23 @@ export const getPlantInfoDao = async (userId, plantNickname) => {
     }
 };
 
+// 식물 이미지 삭제 DB
+export const deleteImageDao = async (userId, plantNickname) => {
+    try {
+        const conn = await pool.getConnection();
+        const [plant] = await conn.query(deleteImageUrlSql, [userId, plantNickname]);
+        conn.release();
+        if (plant.length === 0) {
+            console.error("식물을 찾을 수 없음"); // 에러 로깅
+            throw response(status.NOT_FOUND, { message: '식물을 찾을 수 없습니다.' });
+        }
+        return plant[0];
+    } catch (err) {
+        console.error("getPlantInfo 중 오류 발생:", err); // 에러 로깅
+        throw response(status.INTERNAL_SERVER_ERROR, {});
+    }
+}
+
 // 식물 이름, 날짜 변경 가능
 export const updatePlantInfoDao = async (userId, oldPlantNickname, plantData) => {
     try {
@@ -262,5 +279,26 @@ export const deleteRecordDao = async (userId, plantNickname, date) => {
     } catch (err) {
         console.error("deleteRecord 중 오류 발생:", err); // 에러 로깅
         throw response(status.INTERNAL_SERVER_ERROR, {});
+    }
+};
+
+export const getNameDao = async (userId, plantNickname) => {
+    const conn = await pool.getConnection();
+    try {
+        const [rows] = await conn.query(
+            'SELECT plant_name FROM PLANT WHERE user_id = ? AND plant_nickname = ?',
+            [userId, plantNickname]
+        );
+        conn.release();
+        console.log(rows);
+        if (rows.length > 0) {
+            return rows[0].plant_name;
+        } else {
+            return null;
+        }
+    } catch (err) {
+        conn.release();
+        console.error("데이터베이스에서 기존 식물이름을 가져오는 중 오류 발생:", err);
+        throw err;
     }
 };

@@ -75,3 +75,6 @@ export const nicToId = 'SELECT plant_id FROM PLANT WHERE plant_nickname = ? AND 
 // 식물 부고처리시 -> 대표 식물이면, 대표식물 테이블에서 삭제
 export const isRepresentSql = 'SELECT plant_id FROM REPRESENTATIVE_PLANT WHERE user_id = ? AND plant_id = ?;';
 export const deleteRepresentSql = 'DELETE FROM REPRESENTATIVE_PLANT WHERE user_id = ? AND plant_id = ?;';
+
+//식물 이미지 삭제
+export const deleteImageUrlSql = 'UPDATE PLANT SET plant_img = NULL WHERE user_id = ? AND plant_nickname = ?;';

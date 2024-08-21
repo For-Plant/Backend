@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { imageUploader_plant, renameS3Object, deleteS3Object, editImage } from '../../config/imageUploader.js';
 import { getPlantListService, getRecordListService, getRecordService, getPlantService } from '../providers/recordProvider.js';
 import { writeRecordService, addPlantService, representPlantService, deletePlantService, deadPlantService, updatePlantService, deleteRecordService } from '../services/recordService.js';
-import {getOldImageUrl, getPlantImageDao} from '../models/recordDao.js'
+import { getOldImageUrl, getPlantImageDao, deleteImageDao, getNameDao } from '../models/recordDao.js'
 
 // 메인 기록화면 : 반려식물 목록
 export const getPlantListCon = async (req, res) => {
@@ -170,67 +170,78 @@ export const updatePlantsCon = async (req, res) => {
             console.error("식물 이미지를 업로드하는 중 오류 발생:", err);
             return res.send(response(status.INTERNAL_SERVER_ERROR, { message: err.message }));
         }
-
-        const { plant_nickname } = req.query;
-        const plantData = {
-            name: req.body.name,
-            nickname: req.body.nickname,
-            created_at: req.body.created_at,
-            photo: req.file ? req.file.location : null
-        };
-        
+        // 닉네임 o, 사진 o + 닉네임 o 사진 x +  닉네임 x 사진 o + 닉네임 x 사진 x + 아무것도 없을때
         try {
-            const oldPlantNickname = plant_nickname;
-            console.log(`기존 닉네임: ${oldPlantNickname}`);
+            const plant_nickname = req.query.plant_nickname; 
+            console.log(plant_nickname)
+            console.log('req.body : ', req.body)
+            
+            // body가 비어있다면 : 아무 값도 안줬을 경우에 식물 사진 삭제 
+            const isEmptyRequest = !req.body.name && !req.body.created_at && !req.body.nickname && !req.file;
+            console.log(isEmptyRequest)
+            if (isEmptyRequest) {
+                // 기존 네임을 가져와서 설정
+                const plant_name_origin = await getNameDao(req.verifiedToken.user_id, plant_nickname); // 실제 네임 추출
+                console.log(plant_name_origin)
+                req.body.name = plant_name_origin;
+            }
 
-            // 식물 이미지 교체 : edit이라고 저장된 사진 이름 변경
-            if(req.file){
+            // 식물 데이터를 준비
+            const plantData = {
+                name: req.body.name,
+                nickname: req.body.nickname,
+                created_at: req.body.created_at,
+                photo: req.file ? req.file.location : null
+            };
+
+            // 식물 사진이 없는경우 또는 모든 값이 비어 있는 경우
+            if (!req.file || isEmptyRequest) {
                 // 식물 이미지 URL 조회
                 const plantImage = await getPlantImageDao(req.verifiedToken.user_id, plant_nickname);
                 console.log("삭제할 식물 이미지 URL:", plantImage);
 
-                if (plantImage) {
-                    const key = plantImage.split(".com/")[1]; // S3 키 추출
-                    console.log("삭제할 S3 키:", key);
+                //기존에 식물 이미지 o && 입력한 식물 이미지 X -> 기존 삭제
+                if (plantImage != null && plantData.photo == null) {
+                    const key = plantImage.split(".com/")[1].split("?")[0]; // S3 키 추출
+                    console.log(`삭제할 키: ${key}`);
+
+                    // S3에서 이미지 삭제
                     await deleteS3Object(key);
+
+                    // 데이터베이스에서 프로필 이미지 URL 삭제
+                    await deleteImageDao(req.verifiedToken.user_id, plant_nickname);
+                    plantData.photo = null; // 이미지 삭제 후 null로 설정
                 }
+            }
+            // 사진이 있는 경우 (새로 업로드하는 경우)
+            else {
                 const oldUrl = req.file.location; // req.plant_img 대신 req.file.location 사용
                 const oldKey = oldUrl.split('https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/')[1];
+                console.log('oldKey : ', oldKey)
                 const fileExtension = path.extname(oldKey); // 파일 확장자 가져오기
-                const NicknameSlug = slugify(oldPlantNickname, { lower: true, strict: true });
+                console.log('fileExtension : ', fileExtension)
+                let newNic
+                if(req.body.nickname){ newNic = req.body.nickname }
+                else { newNic = plant_nickname }
+                const NicknameSlug = slugify(newNic, { lower: true, strict: true });
                 const newKey = `plant/${req.verifiedToken.user_id}_${NicknameSlug}${fileExtension}`;
+                
                 console.log(`newKey: ${newKey}`);
                 console.log(`oldKey: ${oldKey}`);
+                
+                const plantImage = await getPlantImageDao(req.verifiedToken.user_id, plant_nickname);
+                if(plantImage){
+                    const key = plantImage.split(".com/")[1].split("?")[0];
+                    console.log("삭제할 식물 이미지 URL:", plantImage);
+                    await deleteS3Object(key);
+                }
+        
                 await renameS3Object(oldKey, newKey);
-                plantData.photo = `https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/${newKey}`;
+
+                const timestamp = new Date().getTime();
+                plantData.photo = `https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/${newKey}?timestamp=${timestamp}`;
             }
-
-            // 식물 닉네임 교체 : S3 이미지 이름 변경
-            if (req.body.nickname) {
-                const newNicknameSlug = slugify(req.body.nickname, { lower: true, strict: true });
-
-                // 데이터베이스에서 기존 이미지 URL 가져오기
-                let oldImageUrl = await getOldImageUrl(req.verifiedToken.user_id, oldPlantNickname);
-                if(plantData.photo){
-                    oldImageUrl = plantData.photo;
-                }
-                if (oldImageUrl) {
-                    // URL에서 키 추출
-                    const oldKey = oldImageUrl.split('https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/')[1];
-                    const fileExtension = path.extname(oldKey); // 파일 확장자 가져오기
-                    const newKey = `plant/${req.verifiedToken.user_id}_${newNicknameSlug}${fileExtension}`;
-                    console.log(`newKey: ${newKey}`);
-                    console.log(`oldKey: ${oldKey}`);
-
-                    await renameS3Object(oldKey, newKey);
-
-                    // 업데이트된 이미지 URL을 plantData에 반영
-                    plantData.photo = `https://for-plant-bucket.s3.ap-northeast-2.amazonaws.com/${newKey}`;
-                } else {
-                    console.error(`기존 키를 데이터베이스에서 찾을 수 없습니다: user_id=${req.verifiedToken.user_id}, plant_nickname=${oldPlantNickname}`);
-                }
-            }
-            const result = await updatePlantService(req.verifiedToken.user_id, oldPlantNickname, plantData);
+            const result = await updatePlantService(req.verifiedToken.user_id, plant_nickname, plantData);
             res.send(response(status.SUCCESS, result));
         } catch (error) {
             console.error("식물 정보를 업데이트하는 중 오류 발생:", error);
@@ -238,9 +249,6 @@ export const updatePlantsCon = async (req, res) => {
         }
     });
 };
-
-
-
 
 // 나의 식물 일지 삭제 : 사용자가 특정 날짜의 식물 기록을 삭제하기
 export const deleteRecordCon = async (req, res) => {

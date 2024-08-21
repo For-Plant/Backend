@@ -86,6 +86,7 @@ export const deadPlantService = async (userId, plantNickname, deadPlantDto) => {
 // 식물 수정 : 식물 이름, 식물 별명, 식물과 만난 날, 식물의 사진
 export const updatePlantService = async (user_id, plant_nickname, plantData) => {
     try {
+        console.log(plant_nickname)
         const result = await updatePlantInfoDao(user_id, plant_nickname, plantData);
         return result;
     } catch (error) {
