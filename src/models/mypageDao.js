@@ -1,7 +1,7 @@
 import { pool } from '../../config/db.connect.js';
 import { response } from '../../config/response.js';
 import { status } from '../../config/response.status.js';
-import { getUserInfoSql, getRepresentPlantSql, getAliveSql, getDeadSql, getDeadPlantDetailsSql, updateUserProfileSql, selectRecord, getProfileUrlSql, getMemberIdSql, getUserInfoEditSql, deleteImageSql } from './mypageSql.js';
+import { getUserInfoSql, getRepresentPlantSql, getAliveSql, getDeadSql, getDeadPlantDetailsSql, updateUserProfileSql, selectRecord, getProfileUrlSql, getMemberIdSql, getNicknameSql, getUserInfoEditSql, deleteImageSql } from './mypageSql.js';
 
 // 사용자 정보 가져오기
 export const getUserInfoDao = async (user_id) => {
@@ -146,6 +146,7 @@ export const getNicknameDao = async (user_id) => {
         const conn = await pool.getConnection();
         const [rows] = await conn.query(getNicknameSql,[user_id]);
         conn.release();
+        console.log(rows)
         return rows;
     } catch (err) {
         console.error("getMemberId 중 오류 발생:", err); // 에러 로깅
