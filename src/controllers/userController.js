@@ -2,8 +2,6 @@
 import { response } from "../../config/response.js";
 import { status } from "../../config/response.status.js";
 import crypto from "crypto";
-
-
 import { checkUser, repeatId, passwordCheck } from "../providers/userProvider.js"
 import { joinUser, checkId, checkPw, signIn } from "../services/userService.js";
 
@@ -82,7 +80,7 @@ export const changePw = async (req, res, next) => {
         console.log("result_id:", result_id)
 
         if ( result_id == undefined || result_id.member_id != req.body.member_id) {
-            return res.send(response(status.LOGIN_ID_NOT_EXIST, {}));
+            return res.send(response(status.USER_NOT_EXIST, {}));
         }
 
         // 아이디 존재하면 비밀번호 변경
@@ -101,10 +99,11 @@ export const login = async (req, res, next) => {
     try {
         console.log("로그인(jwt token 발급)을 요청하였습니다!");
         console.log("body:", req.body); // 값이 잘 들어오나 찍어보기 위한 테스트용
+        // id 존재하는지 확인
         const userId = await repeatId(req.body);
 
         if (userId == undefined) {
-            return res.send(response(status.LOGIN_ID_EXIST, result));
+            return res.send(response(status.USER_NOT_EXIST, {}));
         }
         // 아이디
         console.log(userId.member_id)

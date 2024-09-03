@@ -5,8 +5,8 @@ import jwt from "jsonwebtoken"
 // env
 import dotenv from 'dotenv';
 // 루트에서 환경변수 불러옴
-dotenv.config({ path: "../.env" });
-const jwtsecret = process.env.JWT_SECRET;
+import { JWT_SECRET } from '../../config/jwt.js'
+const jwtsecret = JWT_SECRET
 
 import { addUser, findId,changePw } from "../models/userDao.js";
 

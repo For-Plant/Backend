@@ -188,8 +188,8 @@ $RECYCLE.BIN/
 
 # Ignore db.connect.js file
 config/db.connect.js
-
-# aws accessKey, secretkey, region
-s3.js
+config/s3.js
+config/jwt.js
+config/gpt.js
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,windows

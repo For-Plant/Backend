@@ -93,7 +93,6 @@ export const overlapId = async (data) => {
             `, [data.member_id]
         );
         conn.release();
-        console.log("result:", result[0])
         return result[0];
     } catch (err) {
         throw new BaseError(status.PARAMETER_IS_WRONG);
